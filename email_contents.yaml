@@ -1,0 +1,14 @@
+sender_email: sohnhuangwedding@gmail.com
+
+password: fake_password
+
+subject: RSVP Form for Our Wedding!
+
+body: |
+    Hi {names},
+
+    You are invited to our wedding!{include_plus_one} Please respond below.
+    https://forms.gle/pTKMRorzyygSzgaL7
+
+    Best,
+    Jenny and Tim

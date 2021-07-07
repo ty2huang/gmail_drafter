@@ -1,0 +1,3 @@
+email,names,include_plus_one
+test1@test.com,"A, B, and C",
+test2@test.com,"D",{include_plus_one_text1}
