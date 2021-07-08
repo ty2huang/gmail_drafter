@@ -129,5 +129,5 @@ draftEmailIterator = DraftEmailIterator()
 curEmail = draftEmailIterator.next()
 while curEmail:
     (recipient, subject, body) = curEmail.get_contents()
-    create_draft(service, 'me', create_message('charlestraw@gmail.com', recipient, subject, body))
+    create_draft(service, 'me', create_message('me', recipient, subject, body))
     curEmail = draftEmailIterator.next()
