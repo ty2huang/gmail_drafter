@@ -6,7 +6,7 @@ After that create credentials using instructions here: https://developers.google
 
 FOLLOW THE SECTION THAT SAYS `Create a OAuth client ID credential` and `Create Desktop application credentials`. This is VERY IMPORTANT as creating credentials under any other section will not work.
 
-After you created the credentials, download the file and save it under the root folder of the repo as credentials.json.
+After you created the credentials, download the file and save it under the root folder of the repo as `credentials.json`.
 
 DO NOT UPLOAD THIS FILE TO THE REPO!
 
