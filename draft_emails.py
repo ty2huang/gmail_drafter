@@ -10,6 +10,14 @@ import base64
 import yaml
 import csv
 
+# Global variables from files
+with open('email_contents.yaml', 'r') as f:
+    email_contents = yaml.safe_load(f)
+
+with open('parameters.yaml', 'r') as f:
+    context = yaml.safe_load(f)
+
+
 class DraftEmail:
     def __init__(self, parms_dict):
         self.parms = parms_dict
@@ -36,8 +44,6 @@ class DraftEmail:
 
 class DraftEmailIterator:
     def __init__(self):
-        self.username = email_contents['sender_email']
-        self.password = email_contents['password']
         with open('recipients.csv', 'r') as f:
             self.guests = [DraftEmail(parms) for parms in csv.DictReader(f)]
         self.next_idx = 0
@@ -48,8 +54,6 @@ class DraftEmailIterator:
         self.next_idx += 1
         return self.guests[self.next_idx - 1]
 
-    def get_credentials(self):
-        return self.username, self.password
 
 def create_message(sender, to, subject, message_text):
   """Create a message for an email.
@@ -68,6 +72,7 @@ def create_message(sender, to, subject, message_text):
   message['from'] = sender
   message['subject'] = subject
   return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
+
 
 def create_draft(service, user_id, message_body):
   """Create and insert a draft email. Print the returned draft's message and id.
@@ -91,6 +96,7 @@ def create_draft(service, user_id, message_body):
   except Exception as error:
     print ('An error occurred: %s' % error)
     return None
+
 
 def init_gmail_service():
     SCOPES = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose']
@@ -118,16 +124,11 @@ def init_gmail_service():
     service = build('gmail', 'v1', credentials=creds)
     return service
 
-with open('email_contents.yaml', 'r') as f:
-    email_contents = yaml.safe_load(f)
-
-with open('parameters.yaml', 'r') as f:
-    context = yaml.safe_load(f)
 
 service = init_gmail_service()
-draftEmailIterator = DraftEmailIterator()
-curEmail = draftEmailIterator.next()
-while curEmail:
-    (recipient, subject, body) = curEmail.get_contents()
+session = DraftEmailIterator()
+draft_email = session.next()
+while draft_email:
+    (recipient, subject, body) = draft_email.get_contents()
     create_draft(service, 'me', create_message('me', recipient, subject, body))
-    curEmail = draftEmailIterator.next()
+    draft_email = session.next()

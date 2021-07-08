@@ -1,4 +1,4 @@
-# gmail_drafter
+# Gmail Drafter
 
 Before getting started, you need to create a GCP (Google Cloud Platform) project and enable the Gmail API. See instructions here: https://developers.google.com/workspace/guides/create-project
 
@@ -8,5 +8,7 @@ FOLLOW THE SECTION THAT SAYS `Create a OAuth client ID credential` and `Create D
 
 After you created the credentials, download the file and save it under the root folder of the repo as `credentials.json`.
 
-DO NOT UPLOAD THIS FILE TO THE REPO!
+If you are still getting "access denied" errors, you can add your as "Test User" in the "APIs and services > OAuth consent screen" page.
+
+DO NOT UPLOAD THIS FILE TO THE REPO! This is included in .gitignore so you just need to verify the json file is named correctly.
 
