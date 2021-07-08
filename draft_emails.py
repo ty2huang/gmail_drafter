@@ -11,10 +11,10 @@ import yaml
 import csv
 
 # Global variables from files
-with open('email_contents.yaml', 'r') as f:
+with open('cfgs/email_contents.yaml', 'r') as f:
     email_contents = yaml.safe_load(f)
 
-with open('parameters.yaml', 'r') as f:
+with open('cfgs/parameters.yaml', 'r') as f:
     context = yaml.safe_load(f)
 
 
@@ -44,7 +44,7 @@ class DraftEmail:
 
 class DraftEmailIterator:
     def __init__(self):
-        with open('recipients.csv', 'r') as f:
+        with open('cfgs/recipients.csv', 'r') as f:
             self.guests = [DraftEmail(parms) for parms in csv.DictReader(f)]
         self.next_idx = 0
 
