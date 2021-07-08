@@ -1,6 +1,6 @@
 # gmail_drafter
 
-Before getting started, you need to create a GCP (Google Cloud Platform) and enable the Gmail API. See instructions here: https://developers.google.com/workspace/guides/create-project
+Before getting started, you need to create a GCP (Google Cloud Platform) project and enable the Gmail API. See instructions here: https://developers.google.com/workspace/guides/create-project
 
 After that create credentials using instructions here: https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential
 
