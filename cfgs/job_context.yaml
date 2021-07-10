@@ -1,0 +1,5 @@
+email_contents: sample_email_contents.yaml
+
+parameters: sample_parameters.yaml
+
+recipients: sample_recipients.csv

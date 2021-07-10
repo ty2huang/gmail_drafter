@@ -1,0 +1,4 @@
+enable,email,name,about_name
+1,test1@host.com,Alice,{custom_text_1}
+1,test2@host.com,Bob,{custom_text_2}
+0,test3@host.com,NotToSend,

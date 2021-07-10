@@ -1,0 +1,11 @@
+subject: Fun Email for {name}
+
+body: |
+    Hi {name},
+
+    Just wanted to tell you that your name {about_name}!
+
+    That is all. Have a great day!
+
+    Best,
+    {my_name}

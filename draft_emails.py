@@ -9,14 +9,42 @@ import base64
 
 import yaml
 import csv
+import re
 
-# Global variables from files
-with open('cfgs/email_contents.yaml', 'r') as f:
+
+### Global variables/parameters from files ###
+
+with open('cfgs/job_context.yaml', 'r') as f:
+    job_context = yaml.safe_load(f)
+
+email_contents_file = job_context['email_contents']
+with open('cfgs/' + email_contents_file, 'r') as f:
     email_contents = yaml.safe_load(f)
 
-with open('cfgs/parameters.yaml', 'r') as f:
+parameters_file = job_context['parameters']
+with open('cfgs/' + parameters_file, 'r') as f:
     context = yaml.safe_load(f)
 
+recipients_file = job_context['recipients']
+with open('cfgs/' + recipients_file, 'r') as f:
+    recipients_parms = [parms for parms in csv.DictReader(f) if parms['enable'] == '1']
+
+
+### Class definitions for Text, DraftEmail, and DraftEmailIterator ###
+
+class Text:
+    def __init__(self, text):
+        self.val = text
+
+    def fill_text(self, parms):
+        for k, v in parms.items():
+            self.val = self.val.replace('{' + k + '}', v)
+        return self
+
+    def compress_whitespaces(self):
+        self.val = re.sub(' +', ' ', self.val)
+        self.val = re.sub('\n\n+', '\n\n', self.val)
+        return self
 
 class DraftEmail:
     def __init__(self, parms_dict):
@@ -27,25 +55,15 @@ class DraftEmail:
         self.body = self.parameterize(email_contents['body'])
 
     def parameterize(self, text):
-        class Text:
-            def __init__(self, text):
-                self.val = text
-
-            def fill_text(self, parms):
-                for k, v in parms.items():
-                    self.val = self.val.replace('{' + k + '}', v)
-                return self
-
-        return Text(text).fill_text(self.parms).fill_text(context).val
+        text_obj = Text(text).fill_text(self.parms).fill_text(context)
+        return text_obj.compress_whitespaces().val
 
     def get_contents(self):
         return self.recipient, self.subject, self.body
 
-
 class DraftEmailIterator:
     def __init__(self):
-        with open('cfgs/recipients.csv', 'r') as f:
-            self.guests = [DraftEmail(parms) for parms in csv.DictReader(f)]
+        self.guests = [DraftEmail(parms) for parms in recipients_parms]
         self.next_idx = 0
 
     def next(self):
@@ -54,6 +72,8 @@ class DraftEmailIterator:
         self.next_idx += 1
         return self.guests[self.next_idx - 1]
 
+
+### Functions for creating the email drafting service and writing draft emails ###
 
 def create_message(sender, to, subject, message_text):
   """Create a message for an email.
@@ -72,7 +92,6 @@ def create_message(sender, to, subject, message_text):
   message['from'] = sender
   message['subject'] = subject
   return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
-
 
 def create_draft(service, user_id, message_body):
   """Create and insert a draft email. Print the returned draft's message and id.
@@ -96,7 +115,6 @@ def create_draft(service, user_id, message_body):
   except Exception as error:
     print ('An error occurred: %s' % error)
     return None
-
 
 def init_gmail_service():
     SCOPES = ['https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.compose']
@@ -125,10 +143,12 @@ def init_gmail_service():
     return service
 
 
-service = init_gmail_service()
-session = DraftEmailIterator()
-draft_email = session.next()
-while draft_email:
-    (recipient, subject, body) = draft_email.get_contents()
-    create_draft(service, 'me', create_message('me', recipient, subject, body))
+# Triggering email drafting service for all recipients
+if __name__ == "__main__":
+    service = init_gmail_service()
+    session = DraftEmailIterator()
     draft_email = session.next()
+    while draft_email:
+        (recipient, subject, body) = draft_email.get_contents()
+        create_draft(service, 'me', create_message('me', recipient, subject, body))
+        draft_email = session.next()
