@@ -2,4 +2,5 @@
 credentials.json
 token.json
 cfgs/*
-!cfgs/sample_*
+!cfgs/sample
+!cfgs/job_context.yaml

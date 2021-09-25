@@ -1,5 +1,5 @@
-email_contents: sample_email_contents.yaml
+email_contents: wedding_photos_email.yaml
 
-parameters: sample_parameters.yaml
+parameters: empty.yaml
 
-recipients: sample_recipients.csv
+recipients: wedding_guests.csv

@@ -24,6 +24,8 @@ with open('cfgs/' + email_contents_file, 'r') as f:
 parameters_file = job_context['parameters']
 with open('cfgs/' + parameters_file, 'r') as f:
     context = yaml.safe_load(f)
+    if context is None:
+        context = {}
 
 recipients_file = job_context['recipients']
 with open('cfgs/' + recipients_file, 'r') as f:
